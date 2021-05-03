@@ -1,6 +1,13 @@
-import Mandelbrot from "./mandelbrot.js"
+import Mandelbrot from "./mandelbrot.js";
 
 let moving = false;
+
+let controls = {
+    /**
+     * @type {HTMLInputElement} mandelbrot
+     */
+    zoom: null,
+}
 
 /**
  * @type {Mandelbrot} mandelbrot
@@ -14,6 +21,9 @@ let lastPoint = [];
 let canvas = null;
 
 window.onload = function main() {
+    controls.zoom = document.getElementById('zoom');
+    controls.zoom.oninput = zoomChange;
+    controls.zoom.value = '1.0';
     canvas = document.getElementById('canvas');
     canvas.style.cursor = 'grab';
     try {
@@ -73,4 +83,17 @@ function onup(event) {
     canvas.style.cursor = 'grab';
     mandelbrot.disableDraw();
     moving = false;
+}
+
+/**
+ * 
+ * @param {InputEvent} event 
+ */
+function zoomChange(event) {
+    console.log(event.target.value);
+    let z = parseFloat(event.target.value);
+    if (z > 0) {
+        mandelbrot.setZoom(z);
+    }
+
 }

@@ -17,6 +17,9 @@ export default class Mandelbrot {
     OffsetU = null;
     offset = [0.0, 0.0];
 
+    centerbiasU = null;
+    centerbias = [0.0, 0.0];
+
     viewportU = null;
     zoomU = 0;
     zoom = 1.0;
@@ -34,10 +37,11 @@ export default class Mandelbrot {
         uniform vec2 viewport;
         uniform vec2 lookat;
         uniform vec2 offset;
+        uniform vec2 centerBias;
         uniform vec4 bounds;
         const float approach = 2.0;
         const float threshold = 0.15;
-        const int max_depth = 1000;
+        const int max_depth = 800;
         uniform float zoom;
         int mandelbrot(vec2, float);
     `
@@ -63,12 +67,13 @@ export default class Mandelbrot {
             float x_bias = point.x; // Bias the point of focus, x axis / real
             float y_bias = point.y; // Bias the point of focus, y axis / imaginary
             float ratio = viewport.x / viewport.y; // Ratio of the bounding box width to height
-            float default_height = 2.25;  // Default bounding box height in coordinates not pixels
-            float width = default_height * ratio;   // Calculate width of bounding box based on ratio
-            vec4 bounds = vec4(-1.0 * width, width, -1.0 * default_height, default_height) / 2.0 / zoom;
+            float height = 2.25;  // Default bounding box height in coordinates not pixels
+            float width = height * ratio;   // Calculate width of bounding box based on ratio
+            float heightZ = height / zoom;
+            float widthZ = width / zoom;
 
-            float x =  (gl_FragCoord.x + offset.x) / viewport.x * (bounds[1] - bounds[0]) + bounds[0] + x_bias;
-            float y = (gl_FragCoord.y + offset.y)  / viewport.y * (bounds[3] - bounds[2]) + bounds[2] + y_bias;
+            float x =  (gl_FragCoord.x * widthZ + offset.x * widthZ + centerBias.x * width) / viewport.x  + x_bias - widthZ / 2.0;
+            float y = (gl_FragCoord.y  * heightZ + offset.y * heightZ + centerBias.y * height)  / viewport.y + y_bias - heightZ / 2.0;
 
             float a = 0.0, b = 0.0, a2 = 0.0, b2 = 0.0;
 
@@ -119,6 +124,7 @@ export default class Mandelbrot {
         this.offsetU = this.gl.getUniformLocation(this.info.program, "offset");
         this.viewportU = this.gl.getUniformLocation(this.info.program, "viewport");
         this.zoomU = this.gl.getUniformLocation(this.info.program, "zoom");
+        this.centerbiasU = this.gl.getUniformLocation(this.info.program, "centerBias");
 
         this.gl.clearColor(0.0, 0.0, 0.0, 0.0);
         this.gl.clear(this.gl.COLOR_BUFFER_BIT);
@@ -181,8 +187,14 @@ export default class Mandelbrot {
     }
 
     setZoom(zoom) {
+        this.centerbias[0] += this.offset[0] / this.zoom;
+        this.centerbias[1] += this.offset[1] / this.zoom;
+        this.offset = [0, 0];
         this.zoom = zoom;
+        this.gl.uniform2fv(this.centerbiasU, this.centerbias);
         this.gl.uniform1f(this.zoomU, this.zoom);
+        this.gl.uniform2fv(this.offsetU, this.offset);
+        this.animate(true);
     }
 
     lookAt(x, y) {
