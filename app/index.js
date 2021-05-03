@@ -15,12 +15,11 @@ let canvas = null;
 
 window.onload = function main() {
     canvas = document.getElementById('canvas');
+    canvas.style.cursor = 'grab';
     try {
         mandelbrot = new Mandelbrot(canvas);
         canvas.addEventListener('pointerdown', ondown);
-        canvas.addEventListener('pointermove', onmove);
-        canvas.addEventListener('pointerup', onup);
-        mandelbrot.draw();
+        window.addEventListener('resize', onresize);
     } catch (error) {
         console.error(error);
         const canvasParent = canvas.parentElement;
@@ -30,16 +29,26 @@ window.onload = function main() {
     }
 }
 
+function onresize() {
+    mandelbrot.setViewport(canvas.clientWidth, canvas.clientHeight);
+    console.log([canvas.clientWidth, canvas.clientHeight]);
+    mandelbrot.animate(true);
+}
+
 /**
  * 
  * @param {PointerEvent} event 
  */
 function ondown(event) {
+    document.addEventListener('pointermove', onmove);
+    document.addEventListener('pointerup', onup);
     event.preventDefault();
     let x = event.clientX;
     let y = event.clientY;
     lastPoint = [x, y];
     moving = true;
+
+    canvas.style.cursor = 'grabbing';
 }
 
 /**
@@ -48,10 +57,10 @@ function ondown(event) {
  */
 function onmove(event) {
     event.preventDefault();
+    mandelbrot.enableDraw();
     if (moving) {
         let x = event.clientX;
         let y = event.clientY;
-        
         let drift = [-(x - lastPoint[0]), (y - lastPoint[1])];
         lastPoint = [x, y];
         mandelbrot.offsetPoint(drift[0], drift[1]);
@@ -59,6 +68,9 @@ function onmove(event) {
 }
 
 function onup(event) {
-
+    document.removeEventListener('pointermove', onmove);
+    document.removeEventListener('pointerup', onup);
+    canvas.style.cursor = 'grab';
+    mandelbrot.disableDraw();
     moving = false;
 }

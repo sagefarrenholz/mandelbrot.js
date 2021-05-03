@@ -9,11 +9,17 @@ export default class Mandelbrot {
         1.0,  1.0, 0,
     ]
 
+    canDraw = false;
+
     lookatU = null;
-    lookat = [0.0, 0.0];
+    lookat = [-0.5, 0.0];
 
     OffsetU = null;
     offset = [0.0, 0.0];
+
+    viewportU = null;
+    zoomU = 0;
+    zoom = 1.0;
 
     vertShaderSrc = `
         attribute vec4 vertexPosition;
@@ -102,7 +108,7 @@ export default class Mandelbrot {
         this.canvas = canvas;
         this.canvas.height = this.canvas.parentElement.clientHeight;
         this.canvas.width = this.canvas.parentElement.clientWidth;
-        this.gl = canvas.getContext('webgl');
+        this.gl = canvas.getContext('webgl', {antialias: false});
         if (this.gl === null) {
             throw new Error("WebGL not supported");
         }
@@ -111,26 +117,19 @@ export default class Mandelbrot {
         this.info.buffer = this._bufferDrawRect();
         this.lookatU = this.gl.getUniformLocation(this.info.program, "lookat");
         this.offsetU = this.gl.getUniformLocation(this.info.program, "offset");
+        this.viewportU = this.gl.getUniformLocation(this.info.program, "viewport");
+        this.zoomU = this.gl.getUniformLocation(this.info.program, "zoom");
 
         this.gl.clearColor(0.0, 0.0, 0.0, 0.0);
         this.gl.clear(this.gl.COLOR_BUFFER_BIT);
-    }
-
-    /**
-     * 
-     * @param {Function} breakCond
-     */
-    draw(breakCond) {
         this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
         this.gl.disable(this.gl.DEPTH_TEST);
         {
-            const numComponents = 3;  // pull out 2 values per iteration
-            const type = this.gl.FLOAT;    // the data in the buffer is 32bit floats
-            const normalize = false;  // don't normalize
-            const stride = 0;         // how many bytes to get from one set of values to the next
-                                      // 0 = use type and numComponents above
-            const offset = 0;         // how many bytes inside the buffer to start from
-            //this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.info.buffer);
+            const numComponents = 3; 
+            const type = this.gl.FLOAT;    
+            const normalize = false; 
+            const stride = 0;      
+            const offset = 0;         
             this.gl.vertexAttribPointer(
                 this.gl.getAttribLocation(this.info.program, "vertexPosition"),
                 numComponents,
@@ -139,43 +138,22 @@ export default class Mandelbrot {
                 stride,
                 offset);
             this.gl.enableVertexAttribArray(this.gl.getAttribLocation(this.info.program, "vertexPosition"));
-
-
         }
 
         this.gl.useProgram(this.info.program);
-        const viewportU = this.gl.getUniformLocation(this.info.program, "viewport");
-        this.gl.uniform2fv(viewportU, [this.canvas.width, this.canvas.height]);
-        
-        const zoomU = this.gl.getUniformLocation(this.info.program, "zoom");
 
-        //this.gl.uniform2fv(lookatU, [-2, 0]);
-        //this.gl.uniform2fv(lookatU, [-Math.E/7.0, -Math.E/20.0]);
-        //this.gl.uniform2fv(lookatU, [-0.5, 0]);
-       // this.gl.uniform2fv(lookatU, [0, 1]);
-        //console.log(-1.0 * Math.E / 7.0);
+        this.setViewport(this.canvas.width, this.canvas.height);
+        this.lookAt(...this.lookat);
+        this.setZoom(this.zoom);
 
-        let zoom = 1.0;
-        let lasttime = Date.now();
-        let delta = 0;
+        this.animate(true);
+        setInterval(this.animate.bind(this), 16);
+    }
 
-        this.lookAt(-0.5, 0.0);
-
-        setInterval(() => {
-            delta = (Date.now() - lasttime) / 1000;
-            zoom +=  0;
-            this.gl.uniform1f(zoomU, zoom);
+    animate(force) {
+        if (this.canDraw || force) {
             this.gl.drawArrays(this.gl.TRIANGLES, 0, 6);
-        }, 34)
-        setInterval(() => {
-            console.log(this.lookat[0]);
-            console.log(this.lookat[1]);
-            console.log(`10^-${Math.log10(zoom)}`)
-        }, 1000);
-
-        //while (0) {
-
-        //}
+        }
     }
 
    /**
@@ -184,16 +162,37 @@ export default class Mandelbrot {
      * @param {number} y
      */
     offsetPoint(x, y) {
-        console.log([x, y]);
         this.offset[0] += x;
         this.offset[1] += y;
         this.gl.uniform2fv(this.offsetU, this.offset);
+    }
+
+    enableDraw() {
+        this.canDraw = true;
+    }
+
+    disableDraw() {
+        this.canDraw = false;
+    }
+
+    setViewport(w, h) {
+        console.log("setting viewport " + [w, h])
+        this.gl.uniform2fv(this.viewportU, [w, h]);
+    }
+
+    setZoom(zoom) {
+        this.zoom = zoom;
+        this.gl.uniform1f(this.zoomU, this.zoom);
     }
 
     lookAt(x, y) {
         this.lookat[0] += x;
         this.lookat[1] += y;
         this.gl.uniform2fv(this.lookatU, this.lookat);
+    }
+
+    center() {
+        let centerX = this.lookAt[0] - this.offset[0] / this.canvas.width;
     }
 
     _initShaders() {
