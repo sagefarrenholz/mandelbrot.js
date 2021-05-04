@@ -12,8 +12,21 @@
         <div class="max">
             <div id="info">
                 <div class="control">
-                    <p class="control">Zoom</p>
-                    <input class="control"id="zoom" type="range" min="1.0" max="50.0" placeholder="1.0">
+                    <p class="inline label">Zoom</p>
+                    <input class="slider inline"id="zoom"  placeholder="1.0">
+                    <select class="inline" name="Factor" id="factor">
+                        <option title="Zoom^1" value="linear">Linear</option>
+                        <option title="Zoom^2" value="quadratic">Quadratic</option>
+                        <option title="Zoom^3" value="cubic">Cubic</option>
+                        <option tilte="8^Zoom" value="octave">Ocatve</option>
+                        <option tilte="10^Zoom" value="decade">Decade</option>
+                      </select>
+                </div>
+                <div class="control">
+                    <p class="inline">X</p>
+                    <input id="x" class="num-text">
+                    <p class="inline">Y</p>
+                    <input id="y" class="num-text">
                 </div>
             </div>
             <canvas id="canvas"></canvas>

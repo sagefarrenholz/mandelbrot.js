@@ -41,7 +41,7 @@ export default class Mandelbrot {
         uniform vec4 bounds;
         const float approach = 2.0;
         const float threshold = 0.15;
-        const int max_depth = 800;
+        const int max_depth = 1000;
         uniform float zoom;
         int mandelbrot(vec2, float);
     `
@@ -56,7 +56,7 @@ export default class Mandelbrot {
            } else {*/
                 float mandelf = float(mandelres);
                 float intensity = -1.0 * (approach * mandelf) / (mandelf - threshold * float(max_depth));
-                gl_FragColor = intensity * vec4(1.0, 0.0, 1.0, 1.0);
+                gl_FragColor = intensity * vec4(1.0, 0.5, 0.3, 1.0);
          //  }
         }
     `

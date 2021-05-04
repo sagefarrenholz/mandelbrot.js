@@ -21,6 +21,10 @@ body {
     height: 100%;
 }
 
+.slider {
+    width: 3em;
+}
+
 #info {
     position: absolute;
     padding: 20px;
@@ -28,7 +32,19 @@ body {
     font-family: sans-serif;
 }
 
+.inline {
+    display: inline;
+}
+
+.num-text {
+    width: 2em;
+}
+
+.label {
+
+}
+
 .control {
   
-    display: inline;
+
 }

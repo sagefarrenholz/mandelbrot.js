@@ -1,6 +1,7 @@
 import Mandelbrot from "./mandelbrot.js";
 
 let moving = false;
+let lastZoom = 1.00;
 
 let controls = {
     /**
@@ -20,15 +21,27 @@ let lastPoint = [];
  */
 let canvas = null;
 
+const defLookAt = [-0.5, 0];
+
 window.onload = function main() {
-    controls.zoom = document.getElementById('zoom');
-    controls.zoom.oninput = zoomChange;
-    controls.zoom.value = '1.0';
     canvas = document.getElementById('canvas');
-    canvas.style.cursor = 'grab';
     try {
         mandelbrot = new Mandelbrot(canvas);
+        controls.zoom = document.getElementById('zoom');
+        controls.x = document.getElementById('x');
+        controls.x.value = mandelbrot.defaultX;
+        controls.y = document.getElementById('y');
+        controls.y.value = mandelbrot.defaultY;
+
+        controls.zoom.oninput = zoomChange;
+       // controls.x.oninput = xChange;
+        //controls.x.oninput = yChange;
+        controls.zoom.value = lastZoom;
+
+        canvas.style.cursor = 'grab';
         canvas.addEventListener('pointerdown', ondown);
+        canvas.addEventListener('touchmove', (e) => {e.preventDefault()});
+        document.getElementById('factor').addEventListener('input', zoomChange);
         window.addEventListener('resize', onresize);
     } catch (error) {
         console.error(error);
@@ -52,6 +65,8 @@ function onresize() {
 function ondown(event) {
     document.addEventListener('pointermove', onmove);
     document.addEventListener('pointerup', onup);
+    document.addEventListener('pointerout', onup);
+    document.addEventListener('pointerleave', onup);
     event.preventDefault();
     let x = event.clientX;
     let y = event.clientY;
@@ -90,10 +105,29 @@ function onup(event) {
  * @param {InputEvent} event 
  */
 function zoomChange(event) {
-    console.log(event.target.value);
-    let z = parseFloat(event.target.value);
-    if (z > 0) {
-        mandelbrot.setZoom(z);
-    }
 
+/**
+ * 
+ * @param {HTMLSelectElement} event 
+ */
+    let sel = document.getElementById('factor');
+    let factor = 1.0;
+    let z = parseFloat(event.target.value);
+    if (z <= 0.0 || !Number.isFinite(z)) z = lastZoom;
+    lastZoom = z;
+    switch (sel.value) {
+        case 'octave':    
+            mandelbrot.setZoom(Math.pow(8, z));
+            return;
+        case 'decade':    
+            mandelbrot.setZoom(Math.pow(10, z));
+            return;
+        case 'quadratic':
+            factor = 2.0;
+            break;
+        case 'cubic':
+            factor = 3.0;
+            break;
+    }   
+    mandelbrot.setZoom(Math.pow(z, factor));
 }
