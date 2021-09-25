@@ -41,6 +41,7 @@ window.onload = function main() {
         canvas.style.cursor = 'grab';
         canvas.addEventListener('pointerdown', ondown);
         canvas.addEventListener('touchmove', (e) => {e.preventDefault()});
+        canvas.addEventListener('wheel',onwheel);
         document.getElementById('factor').addEventListener('input', zoomChange);
         window.addEventListener('resize', onresize);
     } catch (error) {
@@ -110,10 +111,16 @@ function zoomChange(event) {
  * 
  * @param {HTMLSelectElement} event 
  */
+
     let sel = document.getElementById('factor');
     let factor = 1.0;
-    let z = parseFloat(event.target.value);
-    if (z <= 0.0 || !Number.isFinite(z)) z = lastZoom;
+    let z = controls.zoom.value;
+
+    if (event) {
+        z = parseFloat(event.target.value);
+    }
+    if (z <= 0.0 || !isFinite(z)) z = lastZoom;
+
     lastZoom = z;
     switch (sel.value) {
         case 'octave':    
@@ -130,4 +137,12 @@ function zoomChange(event) {
             break;
     }   
     mandelbrot.setZoom(Math.pow(z, factor));
+}
+
+function onwheel(event) {
+    event.preventDefault();
+    let scale = 1 + event.deltaY * -0.01;
+    scale = Math.min(Math.max(.8, scale), 1.2);
+    controls.zoom.value *= scale.toFixed(1);
+    zoomChange();
 }

@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap');
+
 html {
     height: 100%;
 }
@@ -6,6 +8,7 @@ body {
     height: 100%;
     margin: 0;
     padding: 0;
+    color: rgb(239, 239, 239);
 }
 
 .max {
@@ -25,11 +28,25 @@ body {
     width: 3em;
 }
 
+option, input {
+    float: right;
+}  
+
 #info {
     position: absolute;
-    padding: 20px;
-    background-color: rgb(255, 255, 255);
-    font-family: sans-serif;
+    top: 1em;
+    left: 1em;
+    padding: 3em;
+    background-color: rgb(20, 20, 20);
+    font-family: 'PT Sans', sans-serif;
+    border-radius: 5px;
+}
+
+#controls-title {
+    font-weight: normal;
+    font-size: 2em;
+    margin: 0.5em 0;
+    padding: none;
 }
 
 .inline {
@@ -42,9 +59,10 @@ body {
 
 .label {
     padding-right: 8px;
-    font-weight: bold;
+
+   /* font-weight: bold; */
 }
 
 .control {
-    padding: 0.5em;
+    margin-top: 0.5em;
 }
