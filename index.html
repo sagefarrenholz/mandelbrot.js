@@ -26,6 +26,10 @@
                         <option title="10^Scale" value="decade">Decade</option>
                     </select>
                 </div>
+                <div class="control" title="How many iterations to compute.">
+                    <p class="label inline">Depth</p>
+                    <input class="slider" id="depth" placeholder="250">
+                </div>
                 <div class="control">
                     <p class="label inline">X</p>
                     <input id="x" class="num-text">
@@ -34,6 +38,18 @@
                     <p class="inline label">Y</p>
                     <input id="y" class="num-text">
                 </div>
+                <div class="control">
+                    <p class="inline label">Boundary Color</p>
+                    <input type="color" id="c-boundary" value="#ffffff" class="num-text">
+                </div>
+                <!--<div class="control">
+                    <p class="inline label">Exterior Color</p>
+                    <input type="color" id="c-exterior" class="num-text">
+                </div>
+                <div class="control">
+                    <p class="inline label">Interior Color</p>
+                    <input type="color" id="c-interior" value="#000000" class="num-text">
+                </div>-->
             </div>
             <canvas id="canvas"></canvas>
         </div>

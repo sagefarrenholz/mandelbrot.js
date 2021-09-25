@@ -24,6 +24,10 @@ export default class Mandelbrot {
     zoomU = 0;
     zoom = 1.0;
 
+    /* Colors */
+    bgColor = [0, 0, 0, 0];
+    boundaryColorU = null;
+
     vertShaderSrc = `
         attribute vec4 vertexPosition;
 
@@ -39,9 +43,10 @@ export default class Mandelbrot {
         uniform vec2 offset;
         uniform vec2 centerBias;
         uniform vec4 bounds;
+        uniform vec4 dColor;
         const float approach = 2.0;
         const float threshold = 0.15;
-        const int max_depth = 1000;
+        const int max_depth = 250;
         uniform float zoom;
         int mandelbrot(vec2, float);
     `
@@ -56,7 +61,7 @@ export default class Mandelbrot {
            } else {*/
                 float mandelf = float(mandelres);
                 float intensity = -1.0 * (approach * mandelf) / (mandelf - threshold * float(max_depth));
-                gl_FragColor = intensity * vec4(1.0, 0.5, 0.3, 1.0);
+                gl_FragColor = intensity * dColor;
          //  }
         }
     `
@@ -125,8 +130,9 @@ export default class Mandelbrot {
         this.viewportU = this.gl.getUniformLocation(this.info.program, "viewport");
         this.zoomU = this.gl.getUniformLocation(this.info.program, "zoom");
         this.centerbiasU = this.gl.getUniformLocation(this.info.program, "centerBias");
+        this.boundaryColorU = this.gl.getUniformLocation(this.info.program, "dColor");
 
-        this.gl.clearColor(0.0, 0.0, 0.0, 0.0);
+        this.gl.clearColor(...this.bgColor);
         this.gl.clear(this.gl.COLOR_BUFFER_BIT);
         this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
         this.gl.disable(this.gl.DEPTH_TEST);
@@ -151,6 +157,7 @@ export default class Mandelbrot {
         this.setViewport(this.canvas.width, this.canvas.height);
         this.lookAt(...this.lookat);
         this.setZoom(this.zoom);
+        this.setBoundaryColor([Math.random(), Math.random(), Math.random(), 1.0]);
 
         this.animate(true);
         setInterval(this.animate.bind(this), 16);
@@ -184,6 +191,15 @@ export default class Mandelbrot {
     setViewport(w, h) {
         console.log("setting viewport " + [w, h])
         this.gl.uniform2fv(this.viewportU, [w, h]);
+    }
+
+    setBGColor(color){
+        this.gl.clearColor(...color);
+    }
+
+    setBoundaryColor(color) {
+        this.gl.uniform4fv(this.boundaryColorU, color);
+        console.log(color);
     }
 
     setZoom(zoom) {

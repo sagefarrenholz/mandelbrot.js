@@ -43,6 +43,8 @@ window.onload = function main() {
         canvas.addEventListener('touchmove', (e) => {e.preventDefault()});
         canvas.addEventListener('wheel',onwheel);
         document.getElementById('factor').addEventListener('input', zoomChange);
+        //document.getElementById('c-interior').addEventListener('input', oncolor);
+        document.getElementById('c-boundary').addEventListener('input', oncolor);
         window.addEventListener('resize', onresize);
     } catch (error) {
         console.error(error);
@@ -55,7 +57,7 @@ window.onload = function main() {
 
 function onresize() {
     mandelbrot.setViewport(canvas.clientWidth, canvas.clientHeight);
-    console.log([canvas.clientWidth, canvas.clientHeight]);
+    //console.log([canvas.clientWidth, canvas.clientHeight]);
     mandelbrot.animate(true);
 }
 
@@ -146,3 +148,28 @@ function onwheel(event) {
     controls.zoom.value *= scale.toFixed(1);
     zoomChange();
 }
+
+function oncolor(event) {
+    const color = event.target.value;
+
+    switch (event.target.id) {
+        case 'c-interior':
+  
+            mandelbrot.setBGColor(hex2rgba(color));
+            
+            break;
+        case 'c-boundary':
+            mandelbrot.setBoundaryColor(hex2rgba(color));
+            break;
+    }
+    mandelbrot.animate(true);
+}
+
+function hex2rgba(hex, alpha = 1) {
+    const [r, g, b] = hex.match(/\w\w/g).map(x => parseInt(x, 16));
+    return [r / 255.0, g / 255.0, b / 255.0, 1.0];
+  };
+
+  function rgbToHex(r, g, b) {
+    return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+  }
