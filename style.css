@@ -33,7 +33,7 @@ body {
 }
 
 .inline {
-    display: inline;
+   display: inline; 
 }
 
 .num-text {
@@ -41,10 +41,10 @@ body {
 }
 
 .label {
-
+    padding-right: 8px;
+    font-weight: bold;
 }
 
 .control {
-  
-
+    padding: 0.5em;
 }

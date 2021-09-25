@@ -12,20 +12,25 @@
         <div class="max">
             <div id="info">
                 <div class="control">
-                    <p class="inline label">Zoom</p>
-                    <input class="slider inline"id="zoom"  placeholder="1.0">
-                    <select class="inline" name="Factor" id="factor">
-                        <option title="Zoom^1" value="linear">Linear</option>
-                        <option title="Zoom^2" value="quadratic">Quadratic</option>
-                        <option title="Zoom^3" value="cubic">Cubic</option>
-                        <option tilte="8^Zoom" value="octave">Ocatve</option>
-                        <option tilte="10^Zoom" value="decade">Decade</option>
-                      </select>
+                    <p class="label inline">Scale</p>
+                    <input class="slider" id="zoom" placeholder="1.0">
                 </div>
                 <div class="control">
-                    <p class="inline">X</p>
+                    <p class="label inline">Scaling Method</p>
+                    <select class="inline" name="Factor" id="factor">
+                        <option title="Scale^1" value="linear">Linear</option>
+                        <option title="Scale^2" value="quadratic">Quadratic</option>
+                        <option title="Scale^3" value="cubic">Cubic</option>
+                        <option title="8^Scale" value="octave">Ocatve</option>
+                        <option title="10^Scale" value="decade">Decade</option>
+                    </select>
+                </div>
+                <div class="control">
+                    <p class="label inline">X</p>
                     <input id="x" class="num-text">
-                    <p class="inline">Y</p>
+                </div>
+                <div class="control">
+                    <p class="inline label">Y</p>
                     <input id="y" class="num-text">
                 </div>
             </div>
