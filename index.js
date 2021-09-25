@@ -79,6 +79,10 @@ function ondown(event) {
     canvas.style.cursor = 'grabbing';
 }
 
+function ondepht(event) {
+    mandelbrot.maxDepthPrimer
+}
+
 /**
  * 
  * @param {PointerEvent} event 
