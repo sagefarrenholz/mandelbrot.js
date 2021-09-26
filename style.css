@@ -34,6 +34,12 @@ option, input, select {
     min-width: 76px;
 }  
 
+@media (max-width: 900px) {
+    #info {
+        display: none;
+    }
+}
+
 #info {
     min-width: 300px;
     position: absolute;
