@@ -1,53 +1,55 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <script defer type="module" src="./index.js"></script>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
         <meta name="HandheldFriendly" content="true" />
         <title>Mandelbrot</title>
         <link rel="stylesheet" href="style.css"></link>
+        <script defer type="module" src="/index.js"></script>
     </head>
     <body>
         <div class="max">
             <div id="info"> 
-                <div class="control">
-                    <p class="label inline">Scale</p>
-                    <input class="slider" id="zoom" type="number" placeholder="1.0">
+                <div class="pane push-down" id="controls">
+                    <div class="control">
+                        <p class="label inline">Scale</p>
+                        <input class="slider" id="zoom" type="number" placeholder="1.0">
+                    </div>
+                    <div class="control">
+                        <p class="label inline">Scaling Method</p>
+                        <select class="inline" name="Factor" id="factor">
+                            <option title="Scale^1" value="linear">Linear</option>
+                            <option title="Scale^2" value="quadratic">Quadratic</option>
+                            <option title="Scale^3" value="cubic">Cubic</option>
+                            <option title="8^Scale" value="octave">Ocatve</option>
+                            <option title="10^Scale" value="decade">Decade</option>
+                        </select>
+                    </div>
+                    <div class="control" title="How many iterations to compute.">
+                        <p class="label inline">Depth</p>
+                        <input class="slider" type="number" id="depth"  value="250">
+                    </div>
+                    <div class="control">
+                        <p class="label inline">X</p>
+                        <input id="x" type="number" value="0"  class="num-text">
+                    </div>
+                    <div class="control">
+                        <p class="inline label">Y</p>
+                        <input id="y" type="number" value="0"  class="num-text">
+                    </div>
+                    <div class="control">
+                        <p class="inline label">Boundary Color</p>
+                        <input type="color" id="c-boundary" value="#ffffff" class="num-text">
+                    </div>
+                    <!--<div class="control">
+                        <p class="inline label">Exterior Color</p>
+                        <input type="color" id="c-exterior" class="num-text">
+                    </div>
+                    <div class="control">
+                        <p class="inline label">Interior Color</p>
+                        <input type="color" id="c-interior" value="#000000" class="num-text">
+                    </div>-->
                 </div>
-                <div class="control">
-                    <p class="label inline">Scaling Method</p>
-                    <select class="inline" name="Factor" id="factor">
-                        <option title="Scale^1" value="linear">Linear</option>
-                        <option title="Scale^2" value="quadratic">Quadratic</option>
-                        <option title="Scale^3" value="cubic">Cubic</option>
-                        <option title="8^Scale" value="octave">Ocatve</option>
-                        <option title="10^Scale" value="decade">Decade</option>
-                    </select>
-                </div>
-                <div class="control" title="How many iterations to compute.">
-                    <p class="label inline">Depth</p>
-                    <input class="slider" type="number" id="depth"  value="250">
-                </div>
-                <div class="control">
-                    <p class="label inline">X</p>
-                    <input id="x" type="number" value="0"  class="num-text">
-                </div>
-                <div class="control">
-                    <p class="inline label">Y</p>
-                    <input id="y" type="number" value="0"  class="num-text">
-                </div>
-                <div class="control">
-                    <p class="inline label">Boundary Color</p>
-                    <input type="color" id="c-boundary" value="#ffffff" class="num-text">
-                </div>
-                <!--<div class="control">
-                    <p class="inline label">Exterior Color</p>
-                    <input type="color" id="c-exterior" class="num-text">
-                </div>
-                <div class="control">
-                    <p class="inline label">Interior Color</p>
-                    <input type="color" id="c-interior" value="#000000" class="num-text">
-                </div>-->
             </div>
             <canvas id="canvas"></canvas>
         </div>

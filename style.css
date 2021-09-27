@@ -40,15 +40,24 @@ option, input, select {
     }
 }
 
-#info {
-    min-width: 300px;
-    position: absolute;
-    top: 1em;
-    left: 1em;
-    padding: 1.5em;
+.pane {
     background-color: rgba(0, 0, 0, 0.409);
     font-family: 'PT Sans', sans-serif;
     border-radius: 2px;
+    padding: 1.5em;
+    min-width: 300px;
+}
+
+#info {
+    width: 300px;
+    position: absolute;
+    top: 1em;
+    left: 1em;
+
+}
+
+.push-down {
+    margin-bottom: 3em;
 }
 
 #controls-title {
