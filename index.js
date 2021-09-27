@@ -102,7 +102,7 @@ function zoomChange(event) {
   if (event) {
     z = parseFloat(event.target.value);
   }
-  if (z <= 0.0 || !Number.isFinite(parseInt(z, 3))) z = lastZoom;
+  if (z <= 0.0 || !isFinite(z)) z = lastZoom; // eslint-disable-line no-restricted-globals
 
   lastZoom = z;
   switch (sel.value) {
@@ -129,7 +129,7 @@ function onwheel(event) {
   event.preventDefault();
   let scale = 1 + event.deltaY * -0.01;
   scale = Math.min(Math.max(0.8, scale), 1.2);
-  controls.zoom.value *= scale.toFixed(2);
+  controls.zoom.value *= scale.toFixed(4);
   zoomChange();
 }
 
